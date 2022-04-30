@@ -1,4 +1,8 @@
-time = (req, res) => {
+// export time = (req, res) => {
+// 	res.json({ time: Date().toString() });
+// };
+
+const time = (req, res) => {
 	res.json({ time: Date().toString() });
 };
 
