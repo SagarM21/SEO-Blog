@@ -1,12 +1,15 @@
-const express = require("express");
-const morgan = require("morgan");
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
-const mongoose = require("mongoose");
-require("dotenv").config();
+import express from "express";
+import morgan from "morgan";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
 
-const blogRoutes = require("./routes/blog.js");
+dotenv.config();
+
+import blogRoutes from "./routes/blog.js";
+import authRoutes from "./routes/auth.js";
 
 // app
 const app = express();
@@ -29,6 +32,7 @@ if (process.env.NODE_ENV === "development") {
 
 // routes middleware
 app.use("/api", blogRoutes);
+app.use("/api", authRoutes);
 
 // port
 const port = process.env.PORT || 8000;
