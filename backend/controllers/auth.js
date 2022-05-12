@@ -1,5 +1,7 @@
 import User from "../models/user.js";
 import shortId from "shortid";
+import jwt from "jsonwebtoken";
+import expressJwt from "express-jwt";
 
 export const signup = (req, res) => {
 	User.findOne({ email: req.body.email }).exec((err, user) => {
@@ -25,6 +27,35 @@ export const signup = (req, res) => {
 			res.json({
 				message: "Signup success! Please sign in.",
 			});
+		});
+	});
+};
+
+export const signin = (req, res) => {
+	const { email, password } = req.body;
+	// check if user exists
+	User.findOne({ email }).exec((err, user) => {
+		if (err || !user) {
+			return res
+				.status(400)
+				.json({ error: "User with that email does not exist. Please signup" });
+		}
+
+		// authenticate
+		if (!user.authenticate(password)) {
+			return res.status(400).json({ error: "Email and password do not match" });
+		}
+
+		// generate a jwt AND sent to client
+		const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+			expiresIn: "1d",
+		});
+
+		res.cookie("token", token, { expiresIn: "1d" });
+		const { _id, username, name, email, role } = user;
+		return res.json({
+			token,
+			user: { _id, username, name, email, role },
 		});
 	});
 };
