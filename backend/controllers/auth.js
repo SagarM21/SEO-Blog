@@ -18,7 +18,7 @@ export const signup = (req, res) => {
 		let newUser = new User({ name, email, password, profile, username });
 		newUser.save((err, success) => {
 			if (err) {
-				return res.status(400).json({ error: err });
+				return res.status(400).json({ error: "Could not signup user" });
 			}
 
 			// res.json({
