@@ -1,6 +1,6 @@
 import Router from "next/router";
 import React, { useState } from "react";
-import { signin } from "../../actions/auth";
+import { authenticate, signin } from "../../actions/auth";
 
 const SigninComponent = () => {
 	const [values, setValues] = useState({
@@ -25,7 +25,9 @@ const SigninComponent = () => {
 				console.log(data.error);
 				setValues({ ...values, error: data.error, loading: false });
 			} else {
-				Router.push(`/`);
+				authenticate(data, () => {
+					Router.push(`/`);
+				});
 			}
 		});
 	};
