@@ -1,7 +1,7 @@
 import express from "express";
 import { adminMiddleware, requireSignin } from "../controllers/auth.js";
 const router = express.Router();
-import { create } from "../controllers/category.js";
+import { create, list, read, remove } from "../controllers/category.js";
 
 // validators
 import { categoryCreateValidator } from "../validators/category.js";
@@ -15,5 +15,8 @@ router.post(
 	adminMiddleware,
 	create
 );
+router.get("/categories", list);
+router.get("/category/:slug", read);
+router.delete("/category/:slug", requireSignin, adminMiddleware, remove);
 
 export default router;
