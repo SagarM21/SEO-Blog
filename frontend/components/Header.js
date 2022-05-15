@@ -12,6 +12,11 @@ import {
 } from "reactstrap";
 import { isAuth, signout } from "../actions/auth";
 import Router from "next/router";
+import nProgress from "nprogress";
+
+Router.onRouteChangeStart = (url) => nProgress.start();
+Router.onRouteChangeComplete = (url) => nProgress.done();
+Router.onRouteChangeError = (url) => nProgress.done();
 
 const Header = () => {
 	const [isOpen, setIsOpen] = useState(false);
