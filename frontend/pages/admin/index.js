@@ -1,11 +1,13 @@
 import Layout from "../../components/Layout";
 import Link from "next/link";
+import Admin from "../../components/auth/Admin";
 
 const AdminIndex = () => {
 	return (
 		<Layout>
-			<h2>Admin DashBoard</h2>
-			
+			<Admin>
+				<h2>Admin DashBoard</h2>
+			</Admin>
 		</Layout>
 	);
 };
