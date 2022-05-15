@@ -21,7 +21,7 @@ export const signup = (req, res) => {
 				return res.status(400).json({ error: "Could not signup user" });
 			}
 
-			// res.json({
+			// res.json({D
 			// 	user: success,
 			// });
 			res.json({
@@ -68,7 +68,40 @@ export const signout = (req, res) => {
 };
 
 export const requireSignin = expressJwt({
-	secret: `${process.env.JWT_SECRET}`,
-	algorithms: ["HS256"], // added later
-	userProperty: "auth",
+	secret: `${process.env.JWT_SECRET}`
+	 //secret: process.env.JWT_SECRET
+	// secret: "seoblogk09",
+	// algorithms: ["HS256"], // added later
+	// userProperty: "auth",
 });
+
+export const authMiddleware = (req, res, next) => {
+	const authUserId = req.user._id;
+	User.findById({ _id: authUserId }).exec((err, user) => {
+		if (err || !user) {
+			return res.status(400).json({
+				error: "User not found",
+			});
+		}
+		req.profile = user;
+		next();
+	});
+};
+
+export const adminMiddleware = (req, res, next) => {
+	const adminUserId = req.user._id;
+	User.findById({ _id: adminUserId }).exec((err, user) => {
+		if (err || !user) {
+			return res.status(400).json({
+				error: "User not found",
+			});
+		}
+		if (user.role !== 1) {
+			return res.status(400).json({
+				error: "Admin resource. Access denied",
+			});
+		}
+		req.profile = user;
+		next();
+	});
+};

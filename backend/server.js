@@ -10,6 +10,7 @@ dotenv.config();
 
 import blogRoutes from "./routes/blog.js";
 import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/user.js";
 
 // app
 const app = express();
@@ -23,6 +24,7 @@ mongoose
 // middleware
 app.use(morgan("dev"));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 //cors
@@ -33,6 +35,7 @@ if (process.env.NODE_ENV === "development") {
 // routes middleware
 app.use("/api", blogRoutes);
 app.use("/api", authRoutes);
+app.use("/api", userRoutes);
 
 // port
 const port = process.env.PORT || 8000;
