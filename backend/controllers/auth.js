@@ -68,15 +68,16 @@ export const signout = (req, res) => {
 };
 
 export const requireSignin = expressJwt({
-	secret: `${process.env.JWT_SECRET}`
-	 //secret: process.env.JWT_SECRET
-	// secret: "seoblogk09",
-	// algorithms: ["HS256"], // added later
-	// userProperty: "auth",
+	//secret: `${process.env.JWT_SECRET}`,
+	//secret: process.env.JWT_SECRET,
+	secret: "seoblogk09",
+	algorithms: ["HS256"], // added later
+	requestProperty: "user", // can be written as userProperty and requestProperty both, both are valid
 });
 
 export const authMiddleware = (req, res, next) => {
 	const authUserId = req.user._id;
+	console.log(user);
 	User.findById({ _id: authUserId }).exec((err, user) => {
 		if (err || !user) {
 			return res.status(400).json({
@@ -90,6 +91,7 @@ export const authMiddleware = (req, res, next) => {
 
 export const adminMiddleware = (req, res, next) => {
 	const adminUserId = req.user._id;
+	//console.log(user)
 	User.findById({ _id: adminUserId }).exec((err, user) => {
 		if (err || !user) {
 			return res.status(400).json({
@@ -102,6 +104,7 @@ export const adminMiddleware = (req, res, next) => {
 			});
 		}
 		req.profile = user;
+
 		next();
 	});
 };

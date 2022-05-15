@@ -11,6 +11,7 @@ dotenv.config();
 import blogRoutes from "./routes/blog.js";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/user.js";
+import categoryRoutes from "./routes/category.js";
 
 // app
 const app = express();
@@ -36,6 +37,7 @@ if (process.env.NODE_ENV === "development") {
 app.use("/api", blogRoutes);
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
+app.use("/api", categoryRoutes);
 
 // port
 const port = process.env.PORT || 8000;
