@@ -7,6 +7,7 @@ import { stripHtml } from "string-strip-html";
 import _ from "lodash";
 import { errorHandler } from "../helpers/dbErrorHandler.js";
 import fs from "fs";
+import { smartTrim } from "../helpers/blog.js";
 
 export const create = (req, res) => {
 	let form = new formidable.IncomingForm();
@@ -49,6 +50,7 @@ export const create = (req, res) => {
 		let blog = new Blog();
 		blog.title = title;
 		blog.body = body;
+		blog.excerpt = smartTrim(body, 120, " ", " ...");
 		blog.slug = slugify(title).toLowerCase();
 		blog.mtitle = `${title} | ${process.env.APP_NAME}`;
 		blog.mdesc = stripHtml(body.substring(0, 160)).result; // gives out only text
