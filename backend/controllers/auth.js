@@ -2,6 +2,7 @@ import User from "../models/user.js";
 import shortId from "shortid";
 import jwt from "jsonwebtoken";
 import expressJwt from "express-jwt";
+import dotenv from "dotenv";
 
 export const signup = (req, res) => {
 	User.findOne({ email: req.body.email }).exec((err, user) => {
@@ -67,10 +68,11 @@ export const signout = (req, res) => {
 	});
 };
 
+dotenv.config();
 export const requireSignin = expressJwt({
-	//secret: `${process.env.JWT_SECRET}`,
+	secret: `${process.env.JWT_SECRET}`, // after adding dotenv stmt, it worked
 	//secret: process.env.JWT_SECRET,
-	secret: "seoblogk09",
+	//secret: "seoblogk09", // if i am hard coding the secret then its working fine 
 	algorithms: ["HS256"], // added later
 	requestProperty: "user", // can be written as userProperty and requestProperty both, both are valid
 });
