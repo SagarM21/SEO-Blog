@@ -1,7 +1,8 @@
 import express from "express";
 const router = express.Router();
-import { time } from "../controllers/blog.js";
+import { create } from "../controllers/blog.js";
+import { requireSignin, adminMiddleware } from "../controllers/auth.js";
 
-router.get("/", time);
+router.post("/blog", requireSignin, adminMiddleware, create);
 
 export default router;
