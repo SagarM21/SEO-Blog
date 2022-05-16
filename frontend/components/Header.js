@@ -14,6 +14,8 @@ import { isAuth, signout } from "../actions/auth";
 import Router from "next/router";
 import nProgress from "nprogress";
 
+import ".././node_modules/nprogress/nprogress.css";
+
 Router.onRouteChangeStart = (url) => nProgress.start();
 Router.onRouteChangeComplete = (url) => nProgress.done();
 Router.onRouteChangeError = (url) => nProgress.done();
