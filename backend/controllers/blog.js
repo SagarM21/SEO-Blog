@@ -105,3 +105,29 @@ export const create = (req, res) => {
 		});
 	});
 };
+
+export const list = (req, res) => {
+	Blog.find({})
+		.populate("categories", "_id name slug")
+		.populate("tags", "_id name slug")
+		.populate("postedBy", "_id name username")
+		.select(
+			"_id title slug excerpt categories tags postedBy createdAt updatedAt"
+		)
+		.exec((err, data) => {
+			if (err) {
+				return res.json({
+					error: errorHandler(err),
+				});
+			}
+			res.json(data);
+		});
+};
+
+export const listAllCategoriesTags = (req, res) => {};
+
+export const read = (req, res) => {};
+
+export const update = (req, res) => {};
+
+export const remove = (req, res) => {};
