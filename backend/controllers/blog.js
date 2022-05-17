@@ -266,3 +266,18 @@ export const remove = (req, res) => {
 		});
 	});
 };
+
+export const photo = (req, res) => {
+	const slug = req.params.slug.toLowerCase();
+	Blog.findOne({ slug })
+		.select("photo")
+		.exec((err, blog) => {
+			if (err || !blog) {
+				return res.json({
+					error: errorHandler(err),
+				});
+			}
+			res.set("Content-Type", blog.photo.contentType);
+			res.send(blog.photo.data);
+		});
+};
