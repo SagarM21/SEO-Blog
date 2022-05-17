@@ -23,29 +23,29 @@ export const create = (req, res) => {
 
 		// this code is showing title is required always - idk
 
-		// if (!title || title.length) {
-		// 	return res.status(400).json({
-		// 		error: "Title is required",
-		// 	});
-		// }
+		if (!title || title.length) {
+			return res.status(400).json({
+				error: "Title is required",
+			});
+		}
 
-		// if (!body || body.length < 200) {
-		// 	return res.status(400).json({
-		// 		error: "Content is too short",
-		// 	});
-		// }
+		if (!body || body.length < 200) {
+			return res.status(400).json({
+				error: "Content is too short",
+			});
+		}
 
-		// if (!categories || categories.length === 0) {
-		// 	return res.status(400).json({
-		// 		error: "At least one category is required",
-		// 	});
-		// }
+		if (!categories || categories.length === 0) {
+			return res.status(400).json({
+				error: "At least one category is required",
+			});
+		}
 
-		// if (!tags || tags.length === 0) {
-		// 	return res.status(400).json({
-		// 		error: "At least one tag is required",
-		// 	});
-		// }
+		if (!tags || tags.length === 0) {
+			return res.status(400).json({
+				error: "At least one tag is required",
+			});
+		}
 
 		let blog = new Blog();
 		blog.title = title;
