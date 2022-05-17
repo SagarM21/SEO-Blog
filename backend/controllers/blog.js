@@ -50,10 +50,10 @@ export const create = (req, res) => {
 		let blog = new Blog();
 		blog.title = title;
 		blog.body = body;
-		blog.excerpt = smartTrim(body, 120, " ", " ...");
+		//blog.excerpt = smartTrim(body, 160, " ", " ...");
 		blog.slug = slugify(title).toLowerCase();
 		blog.mtitle = `${title} | ${process.env.APP_NAME}`;
-		blog.mdesc = stripHtml(body.substring(0, 160)).result; // gives out only text
+		//blog.mdesc = stripHtml(body.substring(0, 160)).result; // gives out only text
 		blog.postedBy = req.user._id;
 
 		// categories and tags

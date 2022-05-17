@@ -5,8 +5,9 @@ import dynamic from "next/dynamic";
 import { withRouter } from "next/router";
 import { getCookie, isAuth } from "../../actions/auth";
 import { getCategories } from "../../actions/category";
-import { getTags } from "../../actions/tag";
 import { createBlog } from "../../actions/blog";
+import { getTags } from "../../actions/tag";
+
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "../../node_modules/react-quill/dist/quill.snow.css";
 
@@ -25,6 +26,9 @@ const BlogCreate = ({ router }) => {
 	const [categories, setCategories] = useState([]);
 	const [tags, setTags] = useState([]);
 
+	const [checkedCategory, setCheckedCategory] = useState([]);
+	const [checkedTag, setCheckedTag] = useState([]);
+
 	const [body, setBody] = useState(blogFromLS());
 	const [values, setValues] = useState({
 		error: "",
@@ -37,6 +41,8 @@ const BlogCreate = ({ router }) => {
 
 	const { error, sizeError, success, formData, title, hidePublishButton } =
 		values;
+
+	const token = getCookie("token");
 
 	useEffect(() => {
 		setValues({ ...values, formData: new FormData() });
@@ -66,7 +72,22 @@ const BlogCreate = ({ router }) => {
 
 	const publishBlog = (e) => {
 		e.preventDefault();
-		console.log("Publish blog");
+		//console.log("Publish blog");
+		createBlog(formData, token).then((data) => {
+			if (data.error) {
+				setValues({ ...values, error: data.error });
+			} else {
+				setValues({
+					...values,
+					title: "",
+					error: "",
+					success: `A new blog titled "${data.title}" is created.`,
+				});
+				setBody("");
+				setCategories([]);
+				setTags([]);
+			}
+		});
 	};
 
 	const handleChange = (name) => (e) => {
@@ -85,12 +106,50 @@ const BlogCreate = ({ router }) => {
 		}
 	};
 
+	const handleToggle = (c) => () => {
+		setValues({ ...values, error: "" });
+		// return the first index or -1
+		const clickedCategory = checkedCategory.indexOf(c);
+		const all = [...checkedCategory];
+
+		if (clickedCategory === -1) {
+			all.push(c);
+		} else {
+			all.splice(clickedCategory, 1);
+		}
+
+		console.log(all);
+		setCheckedCategory(all);
+		formData.set("categories", all);
+	};
+
+	const handleTagsToggle = (t) => () => {
+		setValues({ ...values, error: "" });
+		// return the first index or -1
+		const clickedTags = checkedTag.indexOf(t);
+		const all = [...checkedTag];
+
+		if (clickedTags === -1) {
+			all.push(t);
+		} else {
+			all.splice(clickedTags, 1);
+		}
+
+		console.log(all);
+		setCheckedTag(all);
+		formData.set("tags", all);
+	};
+
 	const showCategories = () => {
 		return (
 			categories &&
 			categories.map((c, i) => (
 				<li key={i} className='list-unstyled'>
-					<input type='checkbox' className='mr-2' />
+					<input
+						onChange={handleToggle(c._id)}
+						type='checkbox'
+						className='mr-2'
+					/>
 					<label className='form-check-label'>{c.name}</label>
 				</li>
 			))
@@ -102,7 +161,11 @@ const BlogCreate = ({ router }) => {
 			tags &&
 			tags.map((t, i) => (
 				<li key={i} className='list-unstyled'>
-					<input type='checkbox' className='mr-2' />
+					<input
+						onChange={handleTagsToggle(t._id)}
+						type='checkbox'
+						className='mr-2'
+					/>
 					<label className='form-check-label'>{t.name}</label>
 				</li>
 			))
@@ -153,7 +216,23 @@ const BlogCreate = ({ router }) => {
 					<hr />
 					{JSON.stringify(tags)}
 				</div>
+
 				<div className='col-md-4'>
+					<div className='form-group pb-2'>
+						<h5>Featured Image</h5>
+						<hr />
+
+						<small className='text-muted'>Max size: 1mb</small>
+						<label className='btn btn-outline-info'>
+							Upload featured image
+							<input
+								onChange={handleChange("photo")}
+								type='file'
+								accept='image/*'
+								hidden
+							/>
+						</label>
+					</div>
 					<div>
 						<h5>Categories</h5>
 						<hr />
