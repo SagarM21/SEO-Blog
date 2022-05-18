@@ -21,32 +21,31 @@ export const create = (req, res) => {
 
 		const { title, body, categories, tags } = fields;
 
-		// this code is showing title is required always - idk
-		// if i uncomment this then blogs will not be published and if comment it then blogs will be published but error is not visible
+		// this was not working bcz i forgot to put ! before title.length
 
-		// if (!title || title.length) {
-		// 	return res.status(400).json({
-		// 		error: "Title is required",
-		// 	});
-		// }
+		if (!title || !title.length) {
+			return res.status(400).json({
+				error: "title is required",
+			});
+		}
 
-		// if (!body || body.length < 200) {
-		// 	return res.status(400).json({
-		// 		error: "Content is too short",
-		// 	});
-		// }
+		if (!body || body.length < 200) {
+			return res.status(400).json({
+				error: "Content is too short",
+			});
+		}
 
-		// if (!categories || categories.length === 0) {
-		// 	return res.status(400).json({
-		// 		error: "At least one category is required",
-		// 	});
-		// }
+		if (!categories || categories.length === 0) {
+			return res.status(400).json({
+				error: "At least one category is required",
+			});
+		}
 
-		// if (!tags || tags.length === 0) {
-		// 	return res.status(400).json({
-		// 		error: "At least one tag is required",
-		// 	});
-		// }
+		if (!tags || tags.length === 0) {
+			return res.status(400).json({
+				error: "At least one tag is required",
+			});
+		}
 
 		let blog = new Blog();
 		blog.title = title;
@@ -274,11 +273,11 @@ export const photo = (req, res) => {
 		.select("photo")
 		.exec((err, blog) => {
 			if (err || !blog) {
-				return res.json({
+				return res.status(400).json({
 					error: errorHandler(err),
 				});
 			}
 			res.set("Content-Type", blog.photo.contentType);
-			res.send(blog.photo.data);
+			return res.send(blog.photo.data);
 		});
 };
