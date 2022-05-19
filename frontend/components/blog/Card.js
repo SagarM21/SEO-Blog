@@ -40,6 +40,7 @@ const Card = ({ blog }) => {
 				{showBlogCategories(blog)}
 				{showBlogTags(blog)}
 				<br />
+				<br />
 			</section>
 
 			<div className='row'>
