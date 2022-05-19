@@ -57,7 +57,12 @@ const SingleBlog = ({ blog, query }) => {
 									<img
 										src={`${API}/blog/photo/${blog.slug}`}
 										alt={blog.title}
-										className='img img-fluid featured-image'
+										className='img img-fluid featured-image' // featured image is not working thats why used inline css
+										style={{
+											width: "100%",
+											maxHeight: "500px",
+											objectFit: "cover",
+										}}
 									/>
 								</div>
 							</section>

@@ -66,7 +66,7 @@ export const create = (req, res) => {
 					error: "Image should be less then 1mb in size",
 				});
 			}
-			blog.photo.data = fs.readFileSync(files.photo.filepath, "utf-8");
+			blog.photo.data = fs.readFileSync(files.photo.filepath); // removing utf-8 resolved the issue of displaying image
 			blog.photo.contentType = files.photo.type;
 		}
 
