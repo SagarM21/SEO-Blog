@@ -1,13 +1,30 @@
 import Head from "next/head";
 import Link from "next/link";
 import Layout from "../../components/Layout";
-import React, { useState } from "react";
-import { singleBlog } from "../../actions/blog";
+import React, { useState, useEffect } from "react";
+import { singleBlog, listRelated } from "../../actions/blog";
 import { API, DOMAIN, APP_NAME, FB_APP_ID } from "../../config";
 import renderHTML from "react-render-html";
 import moment from "moment";
+import SmallCard from "../../components/blog/SmallCard";
 
 const SingleBlog = ({ blog, query }) => {
+	const [related, setRelated] = useState([]);
+
+	const loadRelated = () => {
+		listRelated({ blog }).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setRelated(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		loadRelated();
+	}, []);
+
 	const head = () => (
 		<Head>
 			<title>
@@ -17,14 +34,14 @@ const SingleBlog = ({ blog, query }) => {
 			<link rel='canonical' href={`${DOMAIN}/blogs/${query.slug}`} />
 			<meta property='og:title' content={`${blog.title}| ${APP_NAME}`} />
 			<meta property='og:description' content={blog.mdesc} />
-			<meta property='og:type' content='website' />
+			<meta property='og:type' content='webiste' />
 			<meta property='og:url' content={`${DOMAIN}/blogs/${query.slug}`} />
 			<meta property='og:site_name' content={`${APP_NAME}`} />
 
 			<meta property='og:image' content={`${API}/blog/photo/${blog.slug}`} />
 			<meta
 				property='og:image:secure_url'
-				content={`${API}/blog/photo/${blog.slug}`}
+				ccontent={`${API}/blog/photo/${blog.slug}`}
 			/>
 			<meta property='og:image:type' content='image/jpg' />
 			<meta property='fb:app_id' content={`${FB_APP_ID}`} />
@@ -44,6 +61,16 @@ const SingleBlog = ({ blog, query }) => {
 				<a className='btn btn-outline-primary mr-1 ml-1 mt-3'>{t.name}</a>
 			</Link>
 		));
+
+	const showRelatedBlog = () => {
+		return related.map((blog, i) => (
+			<div className='col-md-4' key={i}>
+				<article>
+					<SmallCard blog={blog} />
+				</article>
+			</div>
+		));
+	};
 
 	return (
 		<React.Fragment>
@@ -95,8 +122,7 @@ const SingleBlog = ({ blog, query }) => {
 
 						<div className='container'>
 							<h4 className='text-center pt-5 pb-5 h2'>Related blogs</h4>
-							<hr />
-							<p>show related blogs</p>
+							<div className='row'>{showRelatedBlog()}</div>
 						</div>
 
 						<div className='container pb-5'>
