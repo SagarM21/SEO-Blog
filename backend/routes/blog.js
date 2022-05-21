@@ -9,6 +9,7 @@ import {
 	update,
 	photo,
 	listRelated,
+	listSearch,
 } from "../controllers/blog.js";
 import { requireSignin, adminMiddleware } from "../controllers/auth.js";
 
@@ -20,5 +21,6 @@ router.delete("/blog/:slug", requireSignin, adminMiddleware, remove);
 router.put("/blog/:slug", requireSignin, adminMiddleware, update);
 router.get("/blog/photo/:slug", photo);
 router.post("/blogs/related", listRelated);
+router.get("/blogs/search", listSearch);
 
 export default router;
