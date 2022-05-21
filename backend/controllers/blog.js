@@ -302,6 +302,7 @@ export const listRelated = (req, res) => {
 };
 
 export const listSearch = (req, res) => {
+	console.log(req.query);
 	const { search } = req.query;
 	if (search) {
 		Blog.find(

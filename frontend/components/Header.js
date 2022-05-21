@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { APP_NAME } from "../config";
 import Link from "next/link";
+import { isAuth, signout } from "../actions/auth";
 import {
 	Navbar,
 	NavbarBrand,
@@ -10,7 +11,7 @@ import {
 	NavLink,
 	NavItem,
 } from "reactstrap";
-import { isAuth, signout } from "../actions/auth";
+import Search from "./blog/Search";
 import Router from "next/router";
 import nProgress from "nprogress";
 
@@ -27,7 +28,7 @@ const Header = () => {
 		setIsOpen(!isOpen);
 	};
 	return (
-		<div>
+		<React.Fragment>
 			<Navbar color='light' light expand='md'>
 				<Link href='/'>
 					<NavLink className='font-weight-bold'>{APP_NAME}</NavLink>
@@ -88,7 +89,8 @@ const Header = () => {
 					</Nav>
 				</Collapse>
 			</Navbar>
-		</div>
+			<Search />
+		</React.Fragment>
 	);
 };
 
