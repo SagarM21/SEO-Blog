@@ -68,7 +68,7 @@ const SigninComponent = () => {
 					<input
 						value={password}
 						onChange={handleChange("password")}
-						type='text'
+						type='password'
 						placeholder='Enter your password'
 						className='form-control'
 					/>
