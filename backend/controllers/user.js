@@ -58,13 +58,19 @@ export const update = (req, res) => {
 		let user = req.profile;
 		user = _.extend(user, fields);
 
+		if (fields.password && fields.password.length < 6) {
+			return res.status(400).json({
+				error: "Password should be min 6 characters long",
+			});
+		}
+
 		if (files.photo) {
 			if (files.photo.size > 10000000) {
 				return res.status(400).json({
 					error: "Image should be less than 1mb",
 				});
 			}
-			user.photo.data = fs.readFileSync(files.photo.path);
+			user.photo.data = fs.readFileSync(files.photo.filepath);
 			user.photo.contentType = files.photo.type;
 		}
 
