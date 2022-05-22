@@ -79,7 +79,7 @@ export const requireSignin = expressJwt({
 
 export const authMiddleware = (req, res, next) => {
 	const authUserId = req.user._id;
-	console.log(user);
+	//console.log(user);
 	User.findById({ _id: authUserId }).exec((err, user) => {
 		if (err || !user) {
 			return res.status(400).json({
