@@ -1,6 +1,7 @@
 import Blog from "../models/blog.js";
 import Category from "../models/category.js";
 import Tag from "../models/tags.js";
+import User from "../models/user.js";
 import formidable from "formidable";
 import slugify from "slugify";
 import { stripHtml } from "string-strip-html";
@@ -322,4 +323,28 @@ export const listSearch = (req, res) => {
 			}
 		).select("-photo -body");
 	}
+};
+
+export const listByUser = (req, res) => {
+	User.findOne({ username: req.params.username }).exec((err, user) => {
+		if (err) {
+			return res.status(400).json({
+				error: errorHandler(err),
+			});
+		}
+		let userId = user._id;
+		Blog.find({ postedBy: userId })
+			.populate("categories", "_id name slug")
+			.populate("tags", "_id name slug")
+			.populate("postedBy", "_id name username")
+			.select("_id title slug createdAt updatedAt postedBy")
+			.exec((err, data) => {
+				if (err) {
+					return res.status(400).json({
+						error: errorHandler(err),
+					});
+				}
+				res.json(data);
+			});
+	});
 };

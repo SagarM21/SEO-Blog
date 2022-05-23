@@ -3,6 +3,7 @@ import shortId from "shortid";
 import jwt from "jsonwebtoken";
 import expressJwt from "express-jwt";
 import dotenv from "dotenv";
+import { errorHandler } from "../helpers/dbErrorHandler.js";
 
 export const signup = (req, res) => {
 	User.findOne({ email: req.body.email }).exec((err, user) => {
@@ -72,7 +73,7 @@ dotenv.config();
 export const requireSignin = expressJwt({
 	secret: `${process.env.JWT_SECRET}`, // after adding dotenv stmt, it worked
 	//secret: process.env.JWT_SECRET,
-	//secret: "seoblogk09", // if i am hard coding the secret then its working fine 
+	//secret: "seoblogk09", // if i am hard coding the secret then its working fine
 	algorithms: ["HS256"], // added later
 	requestProperty: "user", // can be written as userProperty and requestProperty both, both are valid
 });
@@ -107,6 +108,26 @@ export const adminMiddleware = (req, res, next) => {
 		}
 		req.profile = user;
 
+		next();
+	});
+};
+
+export const canUpdateDeleteBlog = (req, res, next) => {
+	const slug = req.params.slug.toLowerCase();
+	Blog.findOne({ slug }).exec((err, data) => {
+		if (err) {
+			return res.status(400).json({
+				error: errorHandler(err),
+			});
+		}
+
+		let authorizedUser =
+			data.postedBy._id.toString() === req.profile._id.toString();
+		if (!authorizedUser) {
+			return res.status(400).json({
+				error: "You are not authorized",
+			});
+		}
 		next();
 	});
 };
