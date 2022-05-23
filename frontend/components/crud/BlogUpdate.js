@@ -46,7 +46,7 @@ const BlogUpdate = ({ router }) => {
 				if (data.error) {
 					console.log(data.error);
 				} else {
-					setValues({ ...values, title: data.title,  });
+					setValues({ ...values, title: data.title });
 					setBody(data.body);
 					setCategoriesArray(data.categories);
 					setTagsArray(data.tags);
@@ -201,17 +201,9 @@ const BlogUpdate = ({ router }) => {
 				if (isAuth() && isAuth().role === 1) {
 					// Router.replace(`/admin/crud/${router.query.slug}`);
 					Router.replace(`/admin`);
-					setTimeout(() => {
-						Router.reload();
-					}, 500);
-					Router.push(`/blogs`);
 				} else if (isAuth() && isAuth().role === 0) {
 					// Router.replace(`/user/crud/${router.query.slug}`);
 					Router.replace(`/user`);
-					setTimeout(() => {
-						Router.reload();
-					}, 500);
-					Router.push(`/blogs`);
 				}
 			}
 		});

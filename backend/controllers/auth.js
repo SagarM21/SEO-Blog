@@ -1,4 +1,5 @@
 import User from "../models/user.js";
+import Blog from "../models/blog.js";
 import shortId from "shortid";
 import jwt from "jsonwebtoken";
 import expressJwt from "express-jwt";
@@ -120,7 +121,6 @@ export const canUpdateDeleteBlog = (req, res, next) => {
 				error: errorHandler(err),
 			});
 		}
-
 		let authorizedUser =
 			data.postedBy._id.toString() === req.profile._id.toString();
 		if (!authorizedUser) {
