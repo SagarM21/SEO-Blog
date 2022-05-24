@@ -158,11 +158,13 @@ export const googleLogin = (req, res) => {
 	const idToken = req.body.tokenId;
 	client
 		.verifyIdToken({ idToken, audience: process.env.GOOGLE_CLIENT_ID })
-		.exec((response) => {
+		.then((response) => {
+			// console.log(response)
 			const { email_verified, name, email, jti } = response.payload;
 			if (email_verified) {
 				User.findOne({ email }).exec((err, user) => {
 					if (user) {
+						// console.log(user)
 						const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
 							expiresIn: "1d",
 						});
@@ -186,9 +188,7 @@ export const googleLogin = (req, res) => {
 							const token = jwt.sign(
 								{ _id: data._id },
 								process.env.JWT_SECRET,
-								{
-									expiresIn: "1d",
-								}
+								{ expiresIn: "1d" }
 							);
 							res.cookie("token", token, { expiresIn: "1d" });
 							const { _id, email, name, role, username } = data;
@@ -201,7 +201,7 @@ export const googleLogin = (req, res) => {
 				});
 			} else {
 				return res.status(400).json({
-					error: "Google login failed, Try again later! ",
+					error: "Google login failed. Try again.",
 				});
 			}
 		});
