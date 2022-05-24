@@ -7,6 +7,7 @@ import {
 	requireSignin,
 	forgotPassword,
 	resetPassword,
+	googleLogin
 } from "../controllers/auth.js";
 
 // validators
@@ -36,6 +37,8 @@ router.put(
 	runValidation,
 	resetPassword
 );
+
+router.post("/google-login", googleLogin);
 
 // test
 // router.get("/secret", requireSignin, (req, res) => {
