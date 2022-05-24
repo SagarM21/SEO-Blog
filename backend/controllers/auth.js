@@ -131,3 +131,23 @@ export const canUpdateDeleteBlog = (req, res, next) => {
 		next();
 	});
 };
+
+export const forgotPassword = (req, res) => {
+	const { email } = req.body;
+
+	User.findOne({ email }).exec((err, user) => {
+		if (err || !user) {
+			return res.status(401).json({
+				error: "User with that email does not exist",
+			});
+		}
+
+		const token = jwt.sign({ _id: user._id }, process.env.JWT_RESET_PASSWORD, {
+			expiresIn: "10m",
+		});
+
+		// email - sendgrid not working
+	});
+};
+
+export const resetPassword = (req, res) => {};
