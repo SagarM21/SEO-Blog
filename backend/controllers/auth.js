@@ -6,6 +6,8 @@ import expressJwt from "express-jwt";
 import dotenv from "dotenv";
 import { errorHandler } from "../helpers/dbErrorHandler.js";
 import { OAuth2Client } from "google-auth-library";
+import sgMail from "@sendgrid/mail";
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export const signup = (req, res) => {
 	User.findOne({ email: req.body.email }).exec((err, user) => {
@@ -148,6 +150,31 @@ export const forgotPassword = (req, res) => {
 		});
 
 		// email - sendgrid not working
+		const emailData = {
+			from: process.env.EMAIL_FROM,
+			to: email,
+			subject: `Password reset link`,
+			html: `
+            <p>Please use the following link to reset your password:</p>
+            <p>${process.env.CLIENT_URL}/auth/password/reset/${token}</p>
+            <hr />
+            <p>This email may contain sensetive information</p>
+            <p>https://seoblog.com</p>
+        `,
+		};
+
+		// populating the db > user > resetPasswordLink
+		return user.updateOne({ resetPasswordLink: token }, (err, success) => {
+			if (err) {
+				return res.json({ error: errorHandler(err) });
+			} else {
+				sgMail.send(emailData).then((sent) => {
+					return res.json({
+						message: `Email has been sent to ${email}. Follow the instructions to reset your password. Link expires in 10min.`,
+					});
+				});
+			}
+		});
 	});
 };
 
