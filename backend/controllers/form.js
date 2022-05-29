@@ -54,9 +54,14 @@ export const contactBlogAuthorForm = (req, res) => {
         `,
 	};
 
-	sgMail.send(emailData).then((sent) => {
-		return res.json({
-			success: true,
+	sgMail
+		.send(emailData)
+		.then((sent) => {
+			return res.json({
+				success: true,
+			});
+		})
+		.catch((error) => {
+			console.log(error.response.body);
 		});
-	});
 };
