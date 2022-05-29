@@ -6,6 +6,9 @@ import expressJwt from "express-jwt";
 import dotenv from "dotenv";
 import { errorHandler } from "../helpers/dbErrorHandler.js";
 import { OAuth2Client } from "google-auth-library";
+import _ from "lodash";
+
+// sendgrid
 import sgMail from "@sendgrid/mail";
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -178,7 +181,47 @@ export const forgotPassword = (req, res) => {
 	});
 };
 
-export const resetPassword = (req, res) => {};
+export const resetPassword = (req, res) => {
+	const { resetPasswordLink, newPassword } = req.body;
+
+	if (resetPasswordLink) {
+		jwt.verify(
+			resetPasswordLink,
+			process.env.JWT_RESET_PASSWORD,
+			function (err, decoded) {
+				if (err) {
+					return res.status(401).json({
+						error: "Expired link. Try again",
+					});
+				}
+				User.findOne({ resetPasswordLink }, (err, user) => {
+					if (err || !user) {
+						return res.status(401).json({
+							error: "Something went wrong. Try later",
+						});
+					}
+					const updatedFields = {
+						password: newPassword,
+						resetPasswordLink: "",
+					};
+
+					user = _.extend(user, updatedFields);
+
+					user.save((err, result) => {
+						if (err) {
+							return res.status(400).json({
+								error: errorHandler(err),
+							});
+						}
+						res.json({
+							message: `Great! Now you can login with your new password`,
+						});
+					});
+				});
+			}
+		);
+	}
+};
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 export const googleLogin = (req, res) => {
